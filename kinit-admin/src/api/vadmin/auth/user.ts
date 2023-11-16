@@ -4,6 +4,11 @@ export const getUserListApi = (params: any): Promise<IResponse> => {
   return request.get({ url: '/vadmin/auth/users', params })
 }
 
+export const getOpenaiKeyTxt = (params: any): Promise<IResponse> => {
+  return request.get({ url: '/vadmin/auth_1/users', params })
+  // return request.get({ url: '/vadmin/workplace/dynamic', params })
+}
+
 export const addUserListApi = (data: any): Promise<IResponse> => {
   return request.post({ url: '/vadmin/auth/users', data })
 }

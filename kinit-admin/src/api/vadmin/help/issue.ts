@@ -45,3 +45,8 @@ export const putIssueApi = (data: any): Promise<IResponse> => {
 export const getIssueApi = (dataId: number): Promise<IResponse> => {
   return request.get({ url: `/vadmin/help/issues/${dataId}` })
 }
+
+// chatbot
+export const getPaperApi = (data: any): Promise<IResponse> => {
+  return request.get({ url: `/vadmin/help/issues/pdf`, data })
+}

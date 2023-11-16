@@ -6,7 +6,8 @@ import {
   delUserListApi,
   putUserListApi,
   getUserApi,
-  postExportUserQueryListApi
+  postExportUserQueryListApi,
+  getOpenaiKeyTxt
 } from '@/api/vadmin/auth/user'
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -32,11 +33,12 @@ const { t } = useI18n()
 const { tableRegister, tableState, tableMethods } = useTable({
   fetchDataApi: async () => {
     const { pageSize, currentPage } = tableState
-    const res = await getUserListApi({
-      page: unref(currentPage),
-      limit: unref(pageSize),
-      ...unref(searchParams)
-    })
+    // const res = await getUserListApi({
+    //   page: unref(currentPage),
+    //   limit: unref(pageSize),
+    //   ...unref(searchParams)
+    // })
+    const res = await getOpenaiKeyTxt()
     return {
       list: res.data || [],
       total: res.count || 0
@@ -62,6 +64,7 @@ const { tableRegister, tableState, tableMethods } = useTable({
 
 const { dataList, loading, total, pageSize, currentPage } = tableState
 const { getList, delList, getSelections, exportQueryList } = tableMethods
+console.log('dataList', dataList)
 
 const genderOptions = ref<DictDetail[]>([])
 
@@ -77,9 +80,23 @@ const tableColumns = reactive<TableColumn[]>([
   {
     field: 'selection',
     type: 'selection',
+    show: true, //表單顯示
+    disabled: true //設定內部可更改
+  },
+  {
+    field: 'name',
+    label: '名稱',
+    show: true,
+    disabled: true,
+    width: '150px'
+  },
+  {
+    field: 'apikey',
+    label: 'OPENAI_apikey',
     show: true,
     disabled: true
   },
+  /*
   {
     field: 'id',
     label: '用户编号',
@@ -87,17 +104,13 @@ const tableColumns = reactive<TableColumn[]>([
     show: true,
     disabled: true
   },
-  {
-    field: 'name',
-    label: '姓名',
-    show: true,
-    disabled: true
-  },
+  
   {
     field: 'nickname',
     label: '昵称',
     show: true
   },
+  
   {
     field: 'telephone',
     label: '手机号',
@@ -140,6 +153,7 @@ const tableColumns = reactive<TableColumn[]>([
       }
     }
   },
+  */
   {
     field: 'is_active',
     label: '是否可用',
@@ -153,8 +167,10 @@ const tableColumns = reactive<TableColumn[]>([
           </>
         )
       }
-    }
+    },
+    width: '100px'
   },
+  /*
   {
     field: 'is_staff',
     label: '工作人员',
@@ -170,15 +186,16 @@ const tableColumns = reactive<TableColumn[]>([
       }
     }
   },
+  */
   {
     field: 'last_login',
-    label: '最近登录时间',
+    label: '最近登錄時間',
     show: true,
     width: '190px'
   },
   {
     field: 'create_datetime',
-    label: '创建时间',
+    label: '創建時間',
     width: '190px',
     show: true
   },
@@ -201,7 +218,7 @@ const tableColumns = reactive<TableColumn[]>([
               size="small"
               onClick={() => editAction(row)}
             >
-              编辑
+              編輯
             </ElButton>
             <ElButton
               type="danger"
@@ -219,7 +236,7 @@ const tableColumns = reactive<TableColumn[]>([
     }
   }
 ])
-
+/*
 const searchSchema = reactive<FormSchema[]>([
   {
     field: 'name',
@@ -236,8 +253,8 @@ const searchSchema = reactive<FormSchema[]>([
     }
   },
   {
-    field: 'telephone',
-    label: '手机号',
+    field: 'apikey',
+    label: 'OPENAI_apikey',
     component: 'Input',
     componentProps: {
       clearable: false,
@@ -287,6 +304,7 @@ const searchSchema = reactive<FormSchema[]>([
     }
   }
 ])
+*/
 
 const searchParams = ref({})
 const setSearchParams = (data: any) => {
@@ -338,6 +356,7 @@ const addAction = () => {
   dialogVisible.value = true
 }
 
+/*
 // 批量导入用户
 const importList = () => {
   dialogTitle.value = '批量导入用户'
@@ -345,9 +364,11 @@ const importList = () => {
   currentRow.value = undefined
   dialogVisible.value = true
 }
+*/
 
 const selections = ref([] as any[])
 
+/*
 // 批量发送密码至短信
 const sendPasswordToSMS = async () => {
   selections.value = await getSelections()
@@ -373,6 +394,7 @@ const sendPasswordToEmail = async () => {
     return ElMessage.warning('请先选择数据')
   }
 }
+*/
 
 const save = async () => {
   const write = unref(writeRef)
@@ -403,7 +425,7 @@ const save = async () => {
 
 <template>
   <ContentWrap>
-    <Search :schema="searchSchema" @reset="setSearchParams" @search="setSearchParams" />
+    <!--<Search :schema="searchSchema" @reset="setSearchParams" @search="setSearchParams" />-->
     <Table
       v-model:current-page="currentPage"
       v-model:page-size="pageSize"
@@ -424,6 +446,7 @@ const save = async () => {
           <ElCol :span="1.5" v-hasPermi="['auth.user.create']">
             <ElButton type="primary" @click="addAction">新增用户</ElButton>
           </ElCol>
+          <!--
           <ElCol :span="1.5" v-hasPermi="['auth.user.import']">
             <ElButton @click="importList">批量导入用户</ElButton>
           </ElCol>
@@ -436,6 +459,7 @@ const save = async () => {
           <ElCol :span="1.5" v-hasPermi="['auth.user.reset']">
             <ElButton @click="sendPasswordToEmail">重置密码通知邮件</ElButton>
           </ElCol>
+          -->
           <ElCol :span="1.5" v-hasPermi="['auth.user.delete']">
             <ElButton type="danger" @click="delData(null)">批量删除</ElButton>
           </ElCol>

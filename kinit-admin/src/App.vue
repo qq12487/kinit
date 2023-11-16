@@ -40,6 +40,7 @@ const addMeta = (name: string, content: string) => {
 // 获取并设置系统配置
 const setSystemConfig = async () => {
   const res = await getSystemBaseConfigApi()
+  console.log('res', res)
   if (res) {
     appStore.setTitle(res.data.web_title || import.meta.env.VITE_APP_TITLE)
     appStore.setLogoImage(res.data.web_logo || '/media/system/logo.png')

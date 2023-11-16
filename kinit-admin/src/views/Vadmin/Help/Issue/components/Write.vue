@@ -51,10 +51,10 @@ const editorConfig = {
 const formSchema = reactive<FormSchema[]>([
   {
     field: 'title',
-    label: '标题名称',
+    label: 'Query',
     component: 'Input',
     colProps: {
-      span: 24
+      span: 18
     },
     componentProps: {
       style: {
@@ -65,6 +65,7 @@ const formSchema = reactive<FormSchema[]>([
       rules: [required()]
     }
   },
+  /*
   {
     field: 'content',
     label: '内容',
@@ -83,11 +84,12 @@ const formSchema = reactive<FormSchema[]>([
       rules: [required()]
     }
   },
+  */
   {
     field: 'category_id',
-    label: '问题类别',
+    label: '問題類別',
     colProps: {
-      span: 24
+      span: 3
     },
     component: 'Select',
     componentProps: {
@@ -102,7 +104,8 @@ const formSchema = reactive<FormSchema[]>([
       const res = await getIssueCategoryOptionsApi()
       return res.data
     }
-  },
+  }
+  /*,
   {
     field: '',
     label: '',
@@ -115,7 +118,7 @@ const formSchema = reactive<FormSchema[]>([
           return (
             <>
               <ElButton loading={saveLoading.value} type="primary" onClick={submit}>
-                立即保存
+                上傳問題
               </ElButton>
             </>
           )
@@ -123,6 +126,7 @@ const formSchema = reactive<FormSchema[]>([
       }
     }
   }
+  */
 ])
 
 const { formRegister, formMethods } = useForm()
@@ -131,6 +135,7 @@ const { getFormData, getElFormExpose, setValues } = formMethods
 const actionType = ref('')
 const saveLoading = ref(false)
 
+/*
 const initData = async () => {
   const issueId = currentRoute.value.query.id
   if (issueId) {
@@ -148,7 +153,12 @@ const initData = async () => {
 }
 
 initData()
+*/
+actionType.value = 'add'
+const reply = ref('')
 
+// 記得上題？？
+// 改輸入問題並回答
 const submit = async () => {
   const elForm = await getElFormExpose()
   const valid = await elForm?.validate()
@@ -165,14 +175,19 @@ const submit = async () => {
     try {
       if (actionType.value === 'add') {
         res.value = await addIssueApi(formData)
+        console.log('res', res)
         if (res.value) {
           // 删除当前标签页，并跳转到列表页
           // tagsViewStore.delView(unref(currentRoute))
           // push('/help/issue')
           elForm?.resetFields()
           ElMessage.success('新增成功')
+          // reply!
+          // reply.value =
         }
-      } else if (actionType.value === 'edit') {
+      }
+      /*
+      else if (actionType.value === 'edit') {
         res.value = await putIssueApi(formData)
         if (res.value) {
           // 删除当前标签页，并跳转到列表页
@@ -182,6 +197,7 @@ const submit = async () => {
           ElMessage.success('更新成功')
         }
       }
+      */
     } finally {
       saveLoading.value = false
     }
@@ -195,6 +211,10 @@ defineExpose({
 
 <template>
   <ContentWrap
-    ><Form @register="formRegister" :schema="formSchema" labelPosition="top"
-  /></ContentWrap>
+    ><Form @register="formRegister" :schema="formSchema" labelPosition="top" />
+    <ElButton type="primary" :loading="saveLoading.value" @click="submit">上傳問題</ElButton>
+  </ContentWrap>
+  <ContentWrap>
+    <span>Question: {{ reply }}</span>
+  </ContentWrap>
 </template>

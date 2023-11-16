@@ -37,6 +37,7 @@ export const usePermissionStore = defineStore('permission', {
       return new Promise<void>((resolve) => {
         let routerMap: AppRouteRecordRaw[] = []
         routerMap = generateRoutesByServer(routers as AppCustomRouteRecordRaw[])
+        console.log('rou', routerMap)
         // 动态路由，404一定要放到最后面
         this.addRouters = routerMap.concat([
           {

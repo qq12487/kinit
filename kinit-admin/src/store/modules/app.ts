@@ -47,7 +47,7 @@ export const useAppStore = defineStore('app', {
       userInfo: 'userInfo', // 登录信息存储字段-建议每个项目换一个字段，避免与其它项目冲突
       sizeMap: ['default', 'large', 'small'],
       mobile: false, // 是否是移动端
-      title: import.meta.env.VITE_APP_TITLE, // 标题
+      title: 'NYCU', // import.meta.env.VITE_APP_TITLE, // 标题
       pageLoading: false, // 路由跳转loading
       breadcrumb: true, // 面包屑
       breadcrumbIcon: true, // 面包屑图标
@@ -61,7 +61,7 @@ export const useAppStore = defineStore('app', {
       tagsViewIcon: true, // 是否显示标签图标
       logo: true, // logo
       fixedHeader: true, // 固定toolheader
-      footer: true, // 显示页脚
+      footer: false, // 显示页脚
       greyMode: false, // 是否开始灰色模式，用于特殊悼念日
       dynamicRouter: getStorage('dynamicRouter'), // 是否动态路由
       serverDynamicRouter: getStorage('serverDynamicRouter'), // 是否服务端渲染动态路由

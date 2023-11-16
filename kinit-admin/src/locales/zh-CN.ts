@@ -31,7 +31,7 @@ export default {
     tagsViewDes: '用于记录路由历史记录',
     tool: '工具',
     toolDes: '用于设置定制系统',
-    query: '查询',
+    query: '查詢',
     reset: '重置',
     shrink: '收起',
     expand: '展开',

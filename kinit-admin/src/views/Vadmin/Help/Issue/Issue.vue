@@ -10,12 +10,16 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { useDictStore } from '@/store/modules/dict'
 import { DictDetail } from '@/utils/dict'
 import { useRouter } from 'vue-router'
+import { getIssueCategoryOptionsApi } from '@/api/vadmin/help/issue'
+import { useValidator } from '@/hooks/web/useValidator'
 
 defineOptions({
   name: 'HelpIssue'
 })
+const a = ref('')
 
 const { push } = useRouter()
+const { required } = useValidator()
 
 const { tableRegister, tableState, tableMethods } = useTable({
   fetchDataApi: async () => {
@@ -38,6 +42,7 @@ const { tableRegister, tableState, tableMethods } = useTable({
 
 const { dataList, loading, total, pageSize, currentPage } = tableState
 const { getList, delList } = tableMethods
+console.log('dataList', dataList)
 
 const platformOptions = ref<DictDetail[]>([])
 
@@ -52,23 +57,24 @@ getOptions()
 const tableColumns = reactive<TableColumn[]>([
   {
     field: 'id',
-    label: '编号',
+    label: '編號',
     show: true,
     disabled: true,
     width: '120px'
   },
   {
     field: 'category.name',
-    label: '类别名称',
+    label: '類別名稱',
     width: '200px',
     show: true,
     disabled: true
   },
   {
     field: 'title',
-    label: '标题',
+    label: '問題',
     show: true
   },
+  /*
   {
     field: 'view_number',
     label: '查看次数',
@@ -104,6 +110,7 @@ const tableColumns = reactive<TableColumn[]>([
     show: true,
     width: '100px'
   },
+  */
   {
     field: 'action',
     width: '120px',
@@ -112,10 +119,11 @@ const tableColumns = reactive<TableColumn[]>([
     slots: {
       default: (data: any) => {
         const row = data.row
+        // 使用is_active可不可刪
         return (
           <>
             <ElButton type="primary" link size="small" onClick={() => editAction(row)}>
-              编辑
+              查看
             </ElButton>
             <ElButton
               type="danger"
@@ -135,8 +143,29 @@ const tableColumns = reactive<TableColumn[]>([
 
 const searchSchema = reactive<FormSchema[]>([
   {
+    field: 'category_id',
+    label: '問題類別',
+    colProps: {
+      span: 24
+    },
+    component: 'Select',
+    componentProps: {
+      style: {
+        width: '100%'
+      }
+    },
+    formItemProps: {
+      rules: [required()]
+    },
+    optionApi: async () => {
+      const res = await getIssueCategoryOptionsApi()
+      return res.data
+    }
+  }
+  /*
+  {
     field: 'name',
-    label: '类别名称',
+    label: '類別名稱',
     component: 'Input',
     componentProps: {
       clearable: true,
@@ -176,6 +205,7 @@ const searchSchema = reactive<FormSchema[]>([
       ]
     }
   }
+  */
 ])
 
 const searchParams = ref({})
@@ -195,6 +225,11 @@ const delData = async (row: any) => {
 }
 
 const editAction = async (row: any) => {
+  push(`/help/issue/form?id=${row.id}`)
+}
+
+// 改看問題回答
+const checkAction = async (row: any) => {
   push(`/help/issue/form?id=${row.id}`)
 }
 
@@ -223,9 +258,7 @@ const addAction = () => {
     >
       <template #toolbar>
         <ElRow :gutter="10">
-          <ElCol :span="1.5">
-            <ElButton type="primary" @click="addAction">新增常见问题</ElButton>
-          </ElCol>
+          <ElCol :span="1">{{ a }}</ElCol>
         </ElRow>
       </template>
     </Table>

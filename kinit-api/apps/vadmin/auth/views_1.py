@@ -16,6 +16,7 @@ from core.dependencies import IdList
 from apps.vadmin.auth.utils.current import AllUserAuth, FullAdminAuth, OpenAuth
 from apps.vadmin.auth.utils.validation.auth import Auth
 from .params import UserParams, RoleParams
+import datetime
 
 app = APIRouter()
 
@@ -33,9 +34,28 @@ async def test(auth: Auth = Depends(OpenAuth())):
 #    用户管理
 ###########################################################
 @app.get("/users", summary="获取用户列表")
+async def get_users():
+    file = '/app/openai_api_key.txt'
+    f = open(file, 'r')
+    keys = []
+    for i, k in enumerate(f.readlines()):
+        keys.append({'id': i+1,'name': None,'apikey': k, 'is_active': True})
+    # data = [keys]
+    # data = [
+    #     {
+    #         "keys": ['workplace.push', 'Github'],
+    #         "time": datetime.datetime.now().strftime("%Y-%m-%d")
+    #     },
+    #     {
+    #         "keys": ['workplace.push', 'Github'],
+    #         "time": datetime.datetime.now().strftime("%Y-%m-%d")
+    #     }
+    # ]
+    return SuccessResponse(keys)
+'''
 async def get_users(
         params: UserParams = Depends(),
-        auth: Auth = Depends(FullAdminAuth(permissions=["auth.key.list"]))
+        auth: Auth = Depends(FullAdminAuth(permissions=["auth.user.list"]))
 ):
     model = models.VadminUser
     options = [joinedload(model.roles)]
@@ -47,7 +67,7 @@ async def get_users(
         v_return_count=True
     )
     return SuccessResponse(datas, count=count)
-
+'''
 
 @app.post("/users", summary="创建用户")
 async def create_user(data: schemas.UserIn, auth: Auth = Depends(FullAdminAuth(permissions=["auth.user.create"]))):
